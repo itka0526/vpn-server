@@ -7,13 +7,19 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"runtime"
 	"time"
 
 	"github.com/lucsky/cuid"
 )
 
 // Add your custom DNS :)
-var DNS = "147.45.231.11"
+var (
+	DNS        = "147.45.231.11"
+	_, b, _, _ = runtime.Caller(0)
+	basepath   = filepath.Dir(b)
+)
 
 type ReqBody struct {
 	Creds string `json:"creds"`
@@ -48,7 +54,7 @@ func CreateNewUser(w http.ResponseWriter, req *http.Request) {
 func Init() {
 	attempts := 25
 	for attempts > 0 {
-		cred, err := os.ReadFile("/root/vpn-server/creds.txt")
+		cred, err := os.ReadFile(basepath + "/creds.txt")
 		if err == nil {
 			os.Setenv("creds", string(cred))
 			break
@@ -65,8 +71,8 @@ func Init() {
 
 func main() {
 	Init()
-
-	http.Handle("/", http.FileServer(http.Dir("./static")))
+	fmt.Println(basepath)
+	http.Handle("/", http.FileServer(http.Dir(basepath+"/static")))
 	http.HandleFunc("/create_new_user", CreateNewUser)
 	http.ListenAndServe(":80", nil)
 }
