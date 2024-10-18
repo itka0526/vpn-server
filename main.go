@@ -65,7 +65,7 @@ func Init() {
 		attempts--
 	}
 	if attempts == 0 {
-		panic("'creds.txt' cannot be found.")
+		panic("File 'creds.txt' cannot be found.")
 	}
 }
 
