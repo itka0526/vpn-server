@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>WireGuard VPN Server - @itka0526</title>
+    <meta name="description" content="Howdy! This is a VPN server created by @itka0526." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap" rel="stylesheet">
+    <style>
+        html,
+        body {
+            font-family: "Tektur", sans-serif;
+            padding: 4rem 8rem;
+        }
+
+        .main {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="main">
+        <article>
+            <h1>Hello there!</h1>
+            <p>
+                This VPN server was built by @itka0526 ;) <br />
+                I've created a small Golang webserver that executes a Linux command to generate a new user.
+            </p>
+            <p>
+                I used hwdsl2's script because its more versatile than angristan's.<br />
+                Here is the basic command I would use to generate a new user using the WireGuard script.
+                <br />
+                <br />
+                <code>
+                    $ ./wireguard.sh --addclient NEW_CLIENT_NAME --dns1 PIHOLE_DNS
+                </code>
+                <br /><br />
+                This is how I setup PiHole to be DNS server, so it can filter out ads.
+                <br />
+                <br />
+                <code>
+                    $ curl -sSL https://install.pi-hole.net | bash
+                </br>
+                    # Pick the physical interface, i.e, eth0
+                </br>
+                    # Pick cloudflare (doesn't matter)
+                </br>
+                    # Accept the rest...
+                </code>
+                <br />
+                <br />
+                Then I made some changes to <code>/etc/lighttpd/lighttpd.conf</code> file, so it can listen to a
+                different port, so it doesn't collide with the Golang server.
+                <br />
+                <br />
+                <code>
+                    $ vim /etc/lighttpd/lighttpd.conf
+                    # port 80 -> 8020
+                </code>
+                <br />
+                <br />
+                After all that I had to enter the PiHole web admin interface and configure DNS to permit all origins, so
+                my WireGuard can use PiHole as its DNS.
+            </p>
+            <p>Here are the links I used:
+            </p>
+            <ul>
+                <li>
+                    <a href="https://github.com/hwdsl2/wireguard-install"
+                        title="https://github.com/hwdsl2/wireguard-install">WireGuard</a>
+                </li>
+                <li>
+                    <a href="https://docs.pi-hole.net/main/basic-install/"
+                        title="https://docs.pi-hole.net/main/basic-install/">Pihole</a>
+                </li>
+            </ul>
+        </article>
+    </main>
+</body>
+
+</html>

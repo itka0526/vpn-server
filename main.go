@@ -12,9 +12,8 @@ import (
 	"github.com/lucsky/cuid"
 )
 
-func Home(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width\"><title>Wireguard - VPN</title></head><body><h1 style=\"text-align:center\">Welcome!</h1><h2 style=\"text-align:center\">To generate a new user go to \"/create_new_user\"</h2></body></html>")
-}
+// Add your custom DNS :)
+var DNS = "147.45.231.11"
 
 type ReqBody struct {
 	Creds string `json:"creds"`
@@ -24,12 +23,16 @@ func CreateNewUser(w http.ResponseWriter, req *http.Request) {
 	var reqBody ReqBody
 
 	err := json.NewDecoder(req.Body).Decode(&reqBody)
-	if err != nil || reqBody.Creds != os.Getenv("creds") {
+	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), "Invalid credentials were provided."), http.StatusBadRequest)
 		return
 	}
+	if reqBody.Creds != os.Getenv("creds") {
+		http.Error(w, fmt.Sprintf("Error: %s", "Wrong credentials were provided."), http.StatusBadRequest)
+		return
+	}
 	cuid := "user-" + cuid.Slug()
-	b, err := exec.Command("bash", "/root/wireguard.sh", "--addclient", cuid).CombinedOutput()
+	b, err := exec.Command("bash", "/root/wireguard.sh", "--addclient", cuid, "--dns1", DNS).CombinedOutput()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), string(b)), http.StatusInternalServerError)
 		return
@@ -63,7 +66,7 @@ func Init() {
 func main() {
 	Init()
 
-	http.HandleFunc("/", Home)
+	http.Handle("/", http.FileServer(http.Dir("./index.html")))
 	http.HandleFunc("/create_new_user", CreateNewUser)
 	http.ListenAndServe(":80", nil)
 }
