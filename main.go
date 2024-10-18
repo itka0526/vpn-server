@@ -66,7 +66,7 @@ func Init() {
 func main() {
 	Init()
 
-	http.Handle("/", http.FileServer(http.Dir("./index.html")))
+	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/create_new_user", CreateNewUser)
 	http.ListenAndServe(":80", nil)
 }
