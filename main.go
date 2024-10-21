@@ -16,7 +16,7 @@ import (
 
 // Add your custom DNS :)
 var (
-	DNS        = "147.45.231.11"
+	// DNS        = "147.45.231.11" # was used for WireGuard
 	_, b, _, _ = runtime.Caller(0)
 	basepath   = filepath.Dir(b)
 )
@@ -38,7 +38,8 @@ func CreateNewUser(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	cuid := "user-" + cuid.Slug()
-	b, err := exec.Command("bash", "/root/wireguard.sh", "--addclient", cuid, "--dns1", DNS).CombinedOutput()
+	// b, err := exec.Command("bash", "/root/wireguard.sh", "--addclient", cuid, "--dns1", DNS).CombinedOutput() # was used for WireGuard
+	b, err := exec.Command("bash", "/root/vpn.sh", "--addclient", cuid).CombinedOutput()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), string(b)), http.StatusInternalServerError)
 		return
