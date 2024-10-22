@@ -70,7 +70,7 @@ func CreateNewUserOV(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), string(b)), http.StatusInternalServerError)
 		return
 	}
-	filePath := "/root/" + cuid + ".conf"
+	filePath := "/root/" + cuid + ".ovpn"
 	conf, err := exec.Command("cat", filePath).CombinedOutput()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error! %s\nOutput: %s", err.Error(), string(conf)), http.StatusInternalServerError)
