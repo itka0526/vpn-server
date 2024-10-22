@@ -81,6 +81,7 @@ func CreateNewUserOV(w http.ResponseWriter, req *http.Request) {
 }
 
 type DelUserReqBody struct {
+	Creds       string   `json:"creds"`
 	ClientNames []string `json:"keys"`
 }
 
@@ -88,6 +89,10 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	var rb DelUserReqBody
 	err := json.NewDecoder(r.Body).Decode(&rb)
 	if err != nil {
+		http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), "Invalid credentials were provided."), http.StatusBadRequest)
+		return
+	}
+	if rb.Creds != serverConfig.Creds {
 		http.Error(w, fmt.Sprintf("Error: %s", "Wrong data was provided."), http.StatusBadRequest)
 		return
 	}
@@ -142,9 +147,6 @@ func main() {
 		})
 	}
 
-	http.HandleFunc("/delete_user", func(w http.ResponseWriter, r *http.Request) {
-		ValidateRequest(w, r, DeleteUser)
-	})
-
+	http.HandleFunc("/delete_user", DeleteUser)
 	http.ListenAndServe(":"+serverConfig.Port, nil)
 }
