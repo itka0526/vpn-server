@@ -19,6 +19,7 @@ type Config struct {
 	Creds  string
 	Port   string
 	Dns_wg string
+	Srv    string
 }
 
 type ReqBody struct {
@@ -45,9 +46,26 @@ func ValidateRequest(w http.ResponseWriter, r *http.Request, f func(http.Respons
 	f(w, r)
 }
 
-func CreateNewUser(w http.ResponseWriter, req *http.Request) {
+func CreateNewUserWG(w http.ResponseWriter, req *http.Request) {
 	cuid := "user-" + cuid.Slug()
 	b, err := exec.Command("bash", "/root/vpn.sh", "--addclient", cuid, "--dns1", serverConfig.Dns_wg).CombinedOutput()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), string(b)), http.StatusInternalServerError)
+		return
+	}
+	filePath := "/root/" + cuid + ".conf"
+	conf, err := exec.Command("cat", filePath).CombinedOutput()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error! %s\nOutput: %s", err.Error(), string(conf)), http.StatusInternalServerError)
+		return
+	}
+	io.WriteString(w, fmt.Sprintf("Success! Output: %s@#$%s", filePath, conf))
+}
+
+func CreateNewUserOV(w http.ResponseWriter, req *http.Request) {
+	cuid := "user-" + cuid.Slug()
+	// CANNOT ADD CUSTOM DNS! HAD TO ADD DNS DURING INITIAL SETUP.
+	b, err := exec.Command("bash", "/root/vpn.sh", "--addclient", cuid).CombinedOutput()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), string(b)), http.StatusInternalServerError)
 		return
@@ -89,9 +107,16 @@ func main() {
 	ReadConfig(basepath + "/serverConfig.toml")
 	http.Handle("/", http.FileServer(http.Dir(basepath+"/static")))
 
-	http.HandleFunc("/create_new_user", func(w http.ResponseWriter, r *http.Request) {
-		ValidateRequest(w, r, CreateNewUser)
-	})
+	switch serverConfig.Srv {
+	case "wg":
+		http.HandleFunc("/create_new_user", func(w http.ResponseWriter, r *http.Request) {
+			ValidateRequest(w, r, CreateNewUserWG)
+		})
+	case "ov":
+		http.HandleFunc("/create_new_user", func(w http.ResponseWriter, r *http.Request) {
+			ValidateRequest(w, r, CreateNewUserOV)
+		})
+	}
 
 	http.ListenAndServe(":"+serverConfig.Port, nil)
 }
