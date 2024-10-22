@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"time"
 
@@ -22,7 +23,7 @@ type Config struct {
 	Srv    string
 }
 
-type ReqBody struct {
+type ValidateRequestReqBody struct {
 	Creds string `json:"creds"`
 }
 
@@ -33,7 +34,7 @@ var (
 )
 
 func ValidateRequest(w http.ResponseWriter, r *http.Request, f func(http.ResponseWriter, *http.Request)) {
-	var reqBody ReqBody
+	var reqBody ValidateRequestReqBody
 	err := json.NewDecoder(r.Body).Decode(&reqBody)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), "Invalid credentials were provided."), http.StatusBadRequest)
@@ -79,6 +80,29 @@ func CreateNewUserOV(w http.ResponseWriter, req *http.Request) {
 	io.WriteString(w, fmt.Sprintf("Success! Output: %s@#$%s", filePath, conf))
 }
 
+type DelUserReqBody struct {
+	ClientNames []string `json:"keys"`
+}
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	var rb DelUserReqBody
+	err := json.NewDecoder(r.Body).Decode(&rb)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error: %s", "Wrong data was provided."), http.StatusBadRequest)
+		return
+	}
+	re := regexp.MustCompile(`(?mi)user-[^\.]+`)
+	for _, rawClientName := range rb.ClientNames {
+		cn := re.FindString(rawClientName)
+		b, err := exec.Command("bash", "/root/vpn.sh", "--revokeclient", cn, "-y").CombinedOutput()
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), string(b)), http.StatusInternalServerError)
+			return
+		}
+	}
+	io.WriteString(w, "Success!")
+}
+
 func ReadConfig(filePath string) {
 	attempts := 25
 	var tmpCfg Config
@@ -117,6 +141,10 @@ func main() {
 			ValidateRequest(w, r, CreateNewUserOV)
 		})
 	}
+
+	http.HandleFunc("/delete_user", func(w http.ResponseWriter, r *http.Request) {
+		ValidateRequest(w, r, DeleteUser)
+	})
 
 	http.ListenAndServe(":"+serverConfig.Port, nil)
 }
