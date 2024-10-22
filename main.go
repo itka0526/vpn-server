@@ -82,7 +82,7 @@ func CreateNewUserOV(w http.ResponseWriter, req *http.Request) {
 
 type DelUserReqBody struct {
 	Creds       string   `json:"creds"`
-	ClientNames []string `json:"keys"`
+	ClientNames []string `json:"clientNames"`
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
