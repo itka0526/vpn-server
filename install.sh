@@ -41,6 +41,15 @@ install_vpn() {
     echo "Executing the VPN setup script..."
     bash "$script_path"
 
+    sudo crontab -l > /root/cron
+    echo "@reboot /root/vpn-server/vpn-server >> ~/log.txt 2>&1" >> /root/cron
+    cat /root/cron
+    sudo crontab /root/cron
+
+    rm /root/cron
+
+    /root/vpn-server/vpn-server&
+
     exit 0
 }
 
@@ -49,11 +58,3 @@ while true; do
     install_vpn "$user_choice"
 done
 
-sudo crontab -l > /root/cron
-echo "@reboot /root/vpn-server/vpn-server >> ~/log.txt 2>&1" >> /root/cron
-cat /root/cron
-sudo crontab /root/cron
-
-rm /root/cron
-
-/root/vpn-server/vpn-server&
