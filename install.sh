@@ -15,3 +15,5 @@ echo "@reboot $HOME/vpn-server/vpn-server >> ~/log.txt 2>&1" >> $HOME/cron
 cat $HOME/cron
 sudo crontab $HOME/cron
 rm $HOME/cron
+
+sudo reboot
