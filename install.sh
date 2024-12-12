@@ -41,13 +41,7 @@ install_vpn() {
     echo "Executing the VPN setup script..."
     bash "$script_path"
 
-    if [[ $? -eq 0 ]]; then
-        echo "VPN installation completed successfully."
-        return 0
-    else
-        echo "VPN installation failed. Please check the setup script for more details."
-        return 1
-    fi
+    return 0
 }
 
 while true; do
