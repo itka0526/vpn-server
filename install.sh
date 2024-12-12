@@ -17,4 +17,4 @@ sudo crontab $HOME/cron
 
 rm $HOME/cron
 
-./$HOME/vpn-server/vpn-server
+$HOME/vpn-server/vpn-server
