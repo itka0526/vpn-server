@@ -16,10 +16,12 @@ install_vpn() {
         1)
             echo "You have chosen to install WireGuard VPN."
             url="https://get.vpnsetup.net/wg"
+            return 0
             ;;
         2)
             echo "You have chosen to install OpenVPN."
             url="https://get.vpnsetup.net/ovpn"
+            return 0
             ;;
         *)
             echo "Invalid option. Please choose 1, 2"
