@@ -52,14 +52,6 @@ install_vpn() {
 while true; do
     read -p "Enter: [1 - WG, 2 - OV]" user_choice
     install_vpn "$user_choice"
-
-    if [[ $? -eq 0 ]]; then
-        break
-    else
-        echo "An error occurred during installation. Please try again."
-    fi
-
-    echo ""
 done
 
 sudo crontab -l > /root/cron
