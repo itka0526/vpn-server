@@ -7,10 +7,10 @@ go version
 
 go build
 
-wget -O /root/vpn.sh https://get.vpnsetup.net/wg
+wget -O $HOME/vpn.sh https://get.vpnsetup.net/wg
 
-sudo crontab -l > /root/cron
-echo "@reboot /root/vpn-server/vpn-server >> ~/log.txt 2>&1" >> /root/cron
-cat /root/cron
-sudo crontab /root/cron
-rm /root/cron
+sudo crontab -l > $HOME/cron
+echo "@reboot $HOME/vpn-server/vpn-server >> ~/log.txt 2>&1" >> $HOME/cron
+cat $HOME/cron
+sudo crontab $HOME/cron
+rm $HOME/cron
