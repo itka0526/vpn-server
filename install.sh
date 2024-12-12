@@ -21,12 +21,8 @@ install_vpn() {
             echo "You have chosen to install OpenVPN."
             url="https://get.vpnsetup.net/ovpn"
             ;;
-        3)
-            echo "Exiting the installation script. Goodbye!"
-            exit 0
-            ;;
         *)
-            echo "Invalid option. Please choose 1, 2, or 3."
+            echo "Invalid option. Please choose 1, 2"
             return 1
             ;;
     esac
@@ -54,23 +50,13 @@ install_vpn() {
 }
 
 while true; do
-    read -p "Enter your choice [1, 2, or 3]: " user_choice
+    read -p "Enter: [1 - WG, 2 - OV]" user_choice
+    install_vpn "$user_choice"
 
-    # Validate input and proceed with installation
-    if [[ "$user_choice" == "1" || "$user_choice" == "2" ]]; then
-        install_vpn "$user_choice"
-        # If installation was successful, exit the loop
-        if [[ $? -eq 0 ]]; then
-            break
-        else
-            echo "An error occurred during installation. Please try again."
-        fi
-    elif [[ "$user_choice" == "3" ]]; then
-        echo "Exiting the installation script. Goodbye!"
-        exit 0
+    if [[ $? -eq 0 ]]; then
+        break
     else
-        echo "Invalid input. Please enter 1, 2, or 3."
-        echo "You can try again."
+        echo "An error occurred during installation. Please try again."
     fi
 
     echo ""
