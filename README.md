@@ -7,7 +7,7 @@ Short instructions.
 ```bash
 wget https://go.dev/dl/go1.21.1.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go && tar -C /usr/local -xzf go1.21.1.linux-amd64.tar.gz
-echo "export PATH=$PATH:/usr/local/go/bin" >> $HOME/.profile
+echo "export PATH=$PATH:/usr/local/go/bin" >> /root/.bashrc
 export PATH=$PATH:/usr/local/go/bin
 go version
 ```
