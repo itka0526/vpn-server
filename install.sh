@@ -3,8 +3,8 @@
 wget https://go.dev/dl/go1.21.1.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go && tar -C /usr/local -xzf go1.21.1.linux-amd64.tar.gz
 echo "export PATH=$PATH:/usr/local/go/bin" >> $HOME/.profile
+source ~/.profile
 go version
-
 go build
 
 wget -O $HOME/vpn.sh https://get.vpnsetup.net/wg
