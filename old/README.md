@@ -15,6 +15,7 @@ export PATH=$PATH:/usr/local/go/bin
 ```bash
 git clone https://github.com/itka0526/vpn-server.git
 cd /root/vpn-server/ && go build
+vim /root/vpn-server/serverConfig.toml
 ```
 
 # Install Pihole
@@ -34,7 +35,7 @@ systemctl restart lighttpd.service
 # Install OVPN (1)
 
 ```bash
-curl -O https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh
+wget -O vpn.sh https://get.vpnsetup.net/ovpn
 chmod +x vpn.sh
 ```
 
