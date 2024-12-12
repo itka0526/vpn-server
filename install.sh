@@ -41,7 +41,7 @@ install_vpn() {
     echo "Executing the VPN setup script..."
     bash "$script_path"
 
-    return 0
+    exit 0
 }
 
 while true; do
