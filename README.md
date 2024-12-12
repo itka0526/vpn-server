@@ -54,3 +54,9 @@ chmod +x vpn.sh
 crontab -e
 @reboot /root/vpn-server/vpn-server >> ~/log.txt 2>&1
 ```
+
+# Google Cloud
+
+```bash
+sudo -s # To login as the root user
+```
