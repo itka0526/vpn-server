@@ -49,12 +49,12 @@ func ValidateRequest(w http.ResponseWriter, r *http.Request, f func(http.Respons
 
 func CreateNewUserWG(w http.ResponseWriter, req *http.Request) {
 	cuid := "user-" + cuid.Slug()
-	b, err := exec.Command("bash", "/root/vpn.sh", "--addclient", cuid, "--dns1", serverConfig.Dns_wg).CombinedOutput()
+	b, err := exec.Command("bash", "$HOME/vpn.sh", "--addclient", cuid, "--dns1", serverConfig.Dns_wg).CombinedOutput()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), string(b)), http.StatusInternalServerError)
 		return
 	}
-	filePath := "/root/" + cuid + ".conf"
+	filePath := "$HOME/" + cuid + ".conf"
 	conf, err := exec.Command("cat", filePath).CombinedOutput()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error! %s\nOutput: %s", err.Error(), string(conf)), http.StatusInternalServerError)
@@ -66,12 +66,12 @@ func CreateNewUserWG(w http.ResponseWriter, req *http.Request) {
 func CreateNewUserOV(w http.ResponseWriter, req *http.Request) {
 	cuid := "user-" + cuid.Slug()
 	// CANNOT ADD CUSTOM DNS! HAD TO ADD DNS DURING INITIAL SETUP.
-	b, err := exec.Command("bash", "/root/vpn.sh", "--addclient", cuid).CombinedOutput()
+	b, err := exec.Command("bash", "$HOME/vpn.sh", "--addclient", cuid).CombinedOutput()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), string(b)), http.StatusInternalServerError)
 		return
 	}
-	filePath := "/root/" + cuid + ".ovpn"
+	filePath := "$HOME/" + cuid + ".ovpn"
 	conf, err := exec.Command("cat", filePath).CombinedOutput()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error! %s\nOutput: %s", err.Error(), string(conf)), http.StatusInternalServerError)
@@ -99,7 +99,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	re := regexp.MustCompile(`(?mi)user-[^\.]+`)
 	for _, rawClientName := range rb.ClientNames {
 		cn := re.FindString(rawClientName)
-		b, err := exec.Command("bash", "/root/vpn.sh", "--revokeclient", cn, "-y").CombinedOutput()
+		b, err := exec.Command("bash", "$HOME/vpn.sh", "--revokeclient", cn, "-y").CombinedOutput()
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), string(b)), http.StatusInternalServerError)
 			return
