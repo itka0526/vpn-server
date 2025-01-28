@@ -99,7 +99,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	re := regexp.MustCompile(`(?mi)user-[^\.]+`)
 	for _, rawClientName := range rb.ClientNames {
 		cn := re.FindString(rawClientName)
-		b, err := exec.Command("sudo", "bash", "/root/vpn.sh", "--revokeclient", cn, "-y").CombinedOutput()
+		b, err := exec.Command("sudo", "bash", "/root/vpn.sh", "--removeclient", cn, "-y").CombinedOutput()
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Error: %s\nOutput: %s", err.Error(), string(b)), http.StatusInternalServerError)
 			return
